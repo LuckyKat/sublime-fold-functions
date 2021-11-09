@@ -102,7 +102,7 @@ def getFoldableRegion (regions, parameterIndex, view):
 def fold (view, edge):
     regions = collectBraces(view)
 
-    parameters = view.find_by_selector('punctuation.definition.parameters.end.js') + view.find_by_selector('meta.function.declaration.js punctuation.section.group.end.js')
+    parameters = view.find_by_selector('punctuation.definition.parameters.end.js') + view.find_by_selector('meta.function.declaration.js punctuation.section.group.end.js') + view.find_by_selector('meta.function.parameters.js punctuation.section.group.end.js')
     closeConstructors = bool(settings.get("fold_constructors", False))
     # braceSelection: 0 = inner, 1 = outer, 2 = greedy outer
     braceSelection = int(settings.get("brace_selection", 0))
@@ -149,7 +149,7 @@ def fold (view, edge):
             scope = view.scope_name(region.a + 1)
             scopeArray = scope.split()
             count = len(scopeArray)
-            if (count > 2 and scopeArray[count - 1] == "meta.object-literal.js" and scopeArray[count - 2] == "meta.group.js"  and scopeArray[count - 3] == "meta.function-call.constructor.js"):
+            if (count > 2 and (scopeArray[count - 1] == "meta.object-literal.js" or scopeArray[count - 1] == "meta.mapping.js") and scopeArray[count - 2] == "meta.group.js"  and scopeArray[count - 3] == "meta.function-call.constructor.js"):
                 # exclude braces
                 foldRegion = sublime.Region(region.a + 1, region.b - 1)
                 if (braceSelection == 1):
